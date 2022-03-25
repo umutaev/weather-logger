@@ -25,6 +25,10 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+    - name: Export test environment variables
+      run: |
+        export SECRET_KEY=test
+        export DEBUG=1
     - name: Run Tests
       run: |
         python ./weather/manage.py test
