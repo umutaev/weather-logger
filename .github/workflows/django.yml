@@ -27,6 +27,7 @@ jobs:
         pip install -r requirements.txt
     - name: Run Tests
       run: |
-        export SECRET_KEY=test
-        export DEBUG=1
         python ./weather/manage.py test
+      env:
+        SECRET_KEY: "test"
+        DEBUG: "1"
