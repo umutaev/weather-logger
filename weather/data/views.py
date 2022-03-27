@@ -10,7 +10,7 @@ from data.serializers import (
 )
 
 
-class DataView(ListAPIView):
+class DataView(ListAPIView, CreateAPIView):
     queryset = DatarecordModel.objects.all()
     permissions_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = DatarecordSerializer
@@ -21,3 +21,7 @@ class DataView(ListAPIView):
         "humidity__label",
         "pressure__label",
     ]
+
+    def create(self, request, *args, **kwargs):
+        request.data["user"] = request.user.pk
+        return super().create(request, *args, **kwargs)
