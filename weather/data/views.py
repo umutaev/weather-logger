@@ -1,33 +1,23 @@
 from rest_framework.generics import ListAPIView, CreateAPIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django_filters import rest_framework as filters
-from data.models import DatarecordModel, TemperatureModel, HumidityModel, PressureModel
-from data.serializers import (
-    DatarecordSerializer,
-    TemperatureSerializer,
-    HumiditySerializer,
-    PressureSerializer,
-)
+from data.models import DatarecordModel
+from data.serializers import DatarecordSerializer
 
 
 class DataFilterset(filters.FilterSet):
-    creation_date = filters.IsoDateTimeFromToRangeFilter()
+    date = filters.IsoDateTimeFromToRangeFilter()
+    user = filters.BaseInFilter()
+    label = filters.BaseInFilter()
+    type = filters.BaseInFilter()
 
     class Meta:
         model = DatarecordModel
-        fields = [
-            "user",
-            "temperature__label",
-            "humidity__label",
-            "pressure__label",
-            "creation_date",
-        ]
+        fields = ["user", "type", "label"]
 
 
 class DataView(ListAPIView, CreateAPIView):
-    queryset = DatarecordModel.objects.all().prefetch_related(
-        "temperature", "humidity", "pressure"
-    )
+    queryset = DatarecordModel.objects.all()
     permissions_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = DatarecordSerializer
     filter_backends = [filters.DjangoFilterBackend]
